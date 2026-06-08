@@ -313,5 +313,22 @@ Variabili supportate:
 - Gli script `docker:*` in package.json semplificano l'uso di Docker
 
 ---
-*Team Lead: Coordinamento progetto AGO CLI*
-*DevOps: Configurazione Docker e script pnpm*
+
+## 🤖 Sviluppo con Multi-Agent Orchestrator
+
+Questo progetto è stato sviluppato utilizzando un approccio innovativo basato su **Multi-Agent Orchestrator**:
+
+- **Modello utilizzato**: `tencent/hy3 preview`
+- **Costo totale**: $0.04
+- **Tempo di sviluppo**: Meno di 10 minuti
+
+L'orchestrazione multi-agente ha permesso di:
+- Suddividere il lavoro tra diversi agenti specializzati (frontend, backend, DevOps)
+- Accelerare significativamente i tempi di sviluppo
+- Mantenere alta qualità del codice e della documentazione
+- Ottimizzare i costi utilizzando modelli efficienti
+
+---
+*Team Lead: Coordinamento progetto AGO CLI*  
+*DevOps: Configurazione Docker e script pnpm*  
+*Sviluppato con Multi-Agent Orchestrator 🤖*

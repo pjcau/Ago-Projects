@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "name": "Wireless Bluetooth Headphones",
+    "price": 79.99,
+    "description": "High-quality wireless headphones with noise cancellation and 30-hour battery life."
+  },
+  {
+    "id": 2,
+    "name": "Smartphone Pro Max",
+    "price": 999.99,
+    "description": "Latest flagship smartphone with advanced camera system and powerful processor."
+  },
+  {
+    "id": 3,
+    "name": "Laptop Ultrabook",
+    "price": 1299.99,
+    "description": "Thin and lightweight laptop with high-resolution display and all-day battery."
+  },
+  {
+    "id": 4,
+    "name": "Smart Watch Fitness",
+    "price": 249.99,
+    "description": "Advanced fitness tracking watch with heart rate monitoring and GPS."
+  },
+  {
+    "id": 5,
+    "name": "Wireless Charging Pad",
+    "price": 39.99,
+    "description": "Fast wireless charging pad compatible with all Qi-enabled devices."
+  },
+  {
+    "id": 6,
+    "name": "USB-C Hub",
+    "price": 89.99,
+    "description": "Multi-port USB-C hub with HDMI, USB-A, and SD card reader ports."
+  }
+]

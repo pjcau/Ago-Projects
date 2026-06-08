@@ -1,30 +1,180 @@
-# Python
+# =============================================================================
+# FRONTEND DEVELOPMENT .gitignore
+# Optimized for Node.js/React/Vue/Angular projects
+# =============================================================================
+
+# ==================== DEPENDENCIES ====================
+node_modules/
+node_modules/**/*
+.pnp
+.pnp.js
+jspm_packages/
+
+# ==================== BUILD OUTPUTS ====================
+# React/Vue/Angular build outputs
+build/
+build/**/*
+dist/
+dist/**/*
+out/
+out/** *
+
+# Framework-specific builds
+.next/
+.next/**/*
+.nuxt/
+.nuxt/** *
+.vuepress/dist/
+.vuepress/dist/** *
+.parcel-cache/
+.parcel-cache/** *
+.vite/
+.vite/** *
+.cache/
+.cache/** *
+
+# Gatsby (uncomment if using Gatsby)
+# public/
+
+# ==================== COMPILED FILES ====================
+*.tsbuildinfo
+*.js.map
+*.jsx.map
+*.ts.map
+*.tsx.map
+
+# ==================== PYTHON (if used in project) ====================
 __pycache__/
+__pycache__/**/*
 *.py[cod]
 *.so
 *.egg-info/
-dist/
-build/
+*.egg-info/** *
 
-# Virtual environments
+# ==================== VIRTUAL ENVIRONMENTS ====================
 venv/
+venv/** *
 .venv/
+.venv/** *
 env/
+env/** *
+ENV/
+ENV/** *
 
-# IDE
+# ==================== IDE & EDITORS ====================
 .vscode/
+.vscode/** *
 .idea/
+.idea/** *
 *.swp
 *.swo
+*.sublime-*
+*.bak
+*~
 
-# OS
+# ==================== OS GENERATED FILES ====================
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
 
-# Logs
+# ==================== LOGS ====================
 *.log
+*.log*
+logs/
+logs/** *
 *.out
+*.out*
 
-# AGO internal
+# ==================== ENVIRONMENT FILES ====================
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+
+# ==================== CACHE DIRECTORIES ====================
+.eslintcache
+.stylelintcache
+*.cache
+*.cache/**
+
+# ==================== COVERAGE REPORTS ====================
+coverage/
+coverage/** *
+*.lcov
+.nyc_output/
+.nyc_output/** *
+
+# ==================== TEMPORARY FILES ====================
+*.tmp
+*.temp
+.temp/
+.temp/** *
+*.bak
+*.backup
+
+# ==================== DOCKER ====================
+.dockerignore
+docker-compose.override.yml
+
+# ==================== AGO INTERNAL FILES ====================
 .ago-sync/
+.ago-sync/** *
 .ago.yaml
+
+# ==================== PACKAGE MANAGER FILES ====================
+# npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.npm
+
+# Yarn
+.yarn-integrity
+
+# Optional REPL history
+.node_repl_history
+
+# ==================== ADDITIONAL CACHES ====================
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Serverless directories
+.serverless/
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+# TernJS port file
+.tern-port
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test/
+
+# Compiled binary addons
+build/Release/
+
+# TypeScript cache (already covered above, but keeping for clarity)
+*.tsbuildinfo
+
+# Optional eslint cache (already covered above)
+.eslintcache
+
+# Optional stylelint cache (already covered above)
+.stylelintcache

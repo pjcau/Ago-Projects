@@ -14,16 +14,17 @@
     "eject": "react-scripts eject",
     "docker:build": "docker build -t product-catalog-app:dev -f Dockerfile.dev .",
     "docker:build:prod": "docker build -t product-catalog-app:prod -f Dockerfile .",
-    "docker:dev": "pnpm docker:build && docker run -it --rm -p 3001:3000 -v $(pwd):/app -v /app/node_modules -e NODE_ENV=development -e REACT_APP_API_URL=http://localhost:3000 --name product-catalog-dev product-catalog-app:dev",
-    "docker:dev:compose": "docker-compose up dev",
-    "docker:dev:compose:build": "docker-compose up --build dev",
+    "docker:build:api": "docker build -t product-catalog-api:latest -f backend/Dockerfile backend/",
+    "docker:dev": "pnpm docker:build && docker run -it --rm -p 3000:3000 -v $(pwd):/app -v /app/node_modules -e NODE_ENV=development -e REACT_APP_API_URL=http://localhost:8000 --name product-catalog-dev product-catalog-app:dev",
+    "docker:api": "pnpm docker:build:api && docker run -it --rm -p 8000:8000 --name product-catalog-api product-catalog-api:latest",
+    "docker:dev:compose": "docker-compose -f ../../docker-compose.yml up dev",
+    "docker:dev:compose:build": "docker-compose -f ../../docker-compose.yml up --build dev",
     "docker:prod": "pnpm docker:build:prod && docker run -it --rm -p 3000:80 -e NODE_ENV=production --name product-catalog-prod product-catalog-app:prod",
-    "docker:prod:compose": "docker-compose up web",
-    "docker:down": "docker-compose down",
+    "docker:prod:compose": "docker-compose -f ../../docker-compose.yml up web",
+    "docker:down": "docker-compose -f ../../docker-compose.yml down",
     "docker:clean": "docker system prune -f && docker volume prune -f",
-    "docker:logs": "docker-compose logs -f",
-    "docker:restart": "docker-compose restart dev",
-    ":dev:docker": "pnpm docker:build && docker run -it --rm --name product-catalog-dev-hot --env-file .env.development -p 3001:3000 -v $(pwd):/app -v /app/node_modules -v /app/build -e CHOKIDAR_USEPOLLING=true -e FAST_REFRESH=true -e WATCHPACK_POLLING=true -e NODE_ENV=development -e REACT_APP_API_URL=http://localhost:3000 product-catalog-app:dev"
+    "docker:logs": "docker-compose -f ../../docker-compose.yml logs -f",
+    "docker:restart": "docker-compose -f ../../docker-compose.yml restart dev"
   },
   "eslintConfig": {
     "extends": [

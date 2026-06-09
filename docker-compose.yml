@@ -1,9 +1,10 @@
 version: '3.8'
 
 services:
+  # ── Frontend (production via Nginx) ──
   web:
     build: 
-      context: .
+      context: ./apps/03-product-catalog
       dockerfile: Dockerfile
     ports:
       - "3000:80"
@@ -16,21 +17,23 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    depends_on:
+      - api
 
-  # Development service with hot-reload
+  # ── Frontend (development with hot-reload) ──
   dev:
     build:
-      context: .
+      context: ./apps/03-product-catalog
       dockerfile: Dockerfile.dev
     ports:
-      - "3001:3000"
+      - "3000:3000"
     volumes:
-      - .:/app
-      - /app/node_modules  # Anonymous volume to preserve container's node_modules
-      - /app/build         # Exclude build directory
+      - ./apps/03-product-catalog:/app
+      - /app/node_modules
+      - /app/build
     environment:
       - NODE_ENV=development
-      - REACT_APP_API_URL=http://localhost:3000
+      - REACT_APP_API_URL=http://localhost:8000
       - CHOKIDAR_USEPOLLING=true
       - FAST_REFRESH=true
       - WATCHPACK_POLLING=true
@@ -38,3 +41,22 @@ services:
     stdin_open: true
     tty: true
     restart: unless-stopped
+    depends_on:
+      - api
+
+  # ── Backend API (FastAPI) ──
+  api:
+    build:
+      context: ./apps/03-product-catalog/backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s

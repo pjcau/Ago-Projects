@@ -4,7 +4,7 @@ services:
   # ── Frontend (production via Nginx) ──
   web:
     build: 
-      context: ./apps/03-product-catalog
+      context: ./apps/01
       dockerfile: Dockerfile
     ports:
       - "3000:80"
@@ -23,12 +23,12 @@ services:
   # ── Frontend (development with hot-reload) ──
   dev:
     build:
-      context: ./apps/03-product-catalog
+      context: ./apps/01
       dockerfile: Dockerfile.dev
     ports:
       - "3000:3000"
     volumes:
-      - ./apps/03-product-catalog:/app
+      - ./apps/01:/app
       - /app/node_modules
       - /app/build
     environment:
@@ -47,7 +47,7 @@ services:
   # ── Backend API (FastAPI) ──
   api:
     build:
-      context: ./apps/03-product-catalog/backend
+      context: ./apps/01/backend
       dockerfile: Dockerfile
     ports:
       - "8000:8000"

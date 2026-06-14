@@ -6,9 +6,15 @@
 # ==================== DEPENDENCIES ====================
 node_modules/
 node_modules/**/*
+apps/*/node_modules/
+apps/*/node_modules/**/*
 .pnp
 .pnp.js
 jspm_packages/
+
+# ==================== PNPM STORE ====================
+.pnpm-store/
+.pnpm-store/**/*
 
 # ==================== BUILD OUTPUTS ====================
 # React/Vue/Angular build outputs

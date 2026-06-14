@@ -1,15 +1,17 @@
 # Development Dockerfile for React application with hot-reload support
-FROM node:18-alpine
+# Build context: the frontend directory (e.g. ./apps/01/src/frontend)
+# The package.json lives at the root of the build context.
+FROM node:20-alpine
 
-# Set working directory
+# Set working directory in the container
 WORKDIR /app
 
 # Install dependencies (separate step for better layer caching)
+# package*.json is at the root of the build context
 COPY package*.json ./
 RUN npm install
 
 # Copy the rest of the application code
-# Note: node_modules is excluded via .dockerignore when using volume mounting
 COPY . .
 
 # Expose port 3000 (default for react-scripts start)
@@ -19,6 +21,7 @@ EXPOSE 3000
 ENV NODE_ENV=development
 ENV CHOKIDAR_USEPOLLING=true
 ENV FAST_REFRESH=true
+ENV WATCHPACK_POLLING=true
 
 # Start development server with hot-reload
 CMD ["npm", "start"]

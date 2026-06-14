@@ -1,62 +1,71 @@
-version: '3.8'
-
 services:
-  # ── Frontend (production via Nginx) ──
-  web:
-    build: 
-      context: ./apps/01
-      dockerfile: Dockerfile
-    ports:
-      - "3000:80"
+  # PostgreSQL database
+  db:
+    image: postgres:15
+    env_file:
+      - .env
     environment:
-      - NODE_ENV=production
-    restart: unless-stopped
+      POSTGRES_DB: ${POSTGRES_DB:-product_catalog}
+      POSTGRES_USER: ${POSTGRES_USER:-user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    depends_on:
-      - api
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-user} -d ${POSTGRES_DB:-product_catalog}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  # ── Frontend (development with hot-reload) ──
-  dev:
+  # Backend API (FastAPI)
+  backend:
     build:
-      context: ./apps/01
+      context: ./apps/01/backend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3001:8000"
+    volumes:
+      - ./apps/01/backend:/app
+      - /app/venv
+      - /app/__pycache__
+      - /app/.pytest_cache
+      # Mount frontend data so the ETL can seed products from JSON
+      - ./apps/01/frontend/src/data:/frontend/src/data:ro
+    env_file:
+      - .env
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-user}:${POSTGRES_PASSWORD:-password}@db:5432/${POSTGRES_DB:-product_catalog}
+      - JWT_SECRET=${JWT_SECRET:-your_jwt_secret_key_here}
+      - JWT_ALGORITHM=HS256
+      - JWT_EXPIRE_MINUTES=30
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # Frontend (React dev server)
+  frontend:
+    build:
+      context: ./apps/01/frontend
       dockerfile: Dockerfile.dev
     ports:
       - "3000:3000"
     volumes:
-      - ./apps/01:/app
+      - ./apps/01/frontend:/app
       - /app/node_modules
       - /app/build
     environment:
       - NODE_ENV=development
-      - REACT_APP_API_URL=http://localhost:8000
+      - REACT_APP_API_URL=http://localhost:3001
       - CHOKIDAR_USEPOLLING=true
       - FAST_REFRESH=true
       - WATCHPACK_POLLING=true
-    command: npm start
     stdin_open: true
     tty: true
-    restart: unless-stopped
     depends_on:
-      - api
+      - backend
 
-  # ── Backend API (FastAPI) ──
-  api:
-    build:
-      context: ./apps/01/backend
-      dockerfile: Dockerfile
-    ports:
-      - "8000:8000"
-    environment:
-      - PYTHONDONTWRITEBYTECODE=1
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:8000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
+volumes:
+  postgres_data:

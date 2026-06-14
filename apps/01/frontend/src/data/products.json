@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "name": "Classic Leather Backpack",
+    "price": 89.99,
+    "description": "Handcrafted full-grain leather backpack with padded laptop compartment and brass hardware. Perfect for daily commutes or weekend adventures.",
+    "image": "/images/backpack.jpg"
+  },
+  {
+    "id": 2,
+    "name": "Wireless Noise-Cancelling Headphones",
+    "price": 249.99,
+    "description": "Premium over-ear headphones with active noise cancellation, 30-hour battery life, and ultra-comfortable memory foam ear cushions.",
+    "image": "/images/headphones.jpg"
+  },
+  {
+    "id": 3,
+    "name": "Organic Cotton T-Shirt",
+    "price": 34.99,
+    "description": "Soft, breathable 100% organic cotton tee. Pre-shrunk, tagless, and available in a range of earthy tones.",
+    "image": "/images/tshirt.jpg"
+  },
+  {
+    "id": 4,
+    "name": "Stainless Steel Water Bottle",
+    "price": 24.99,
+    "description": "Double-wall vacuum insulated bottle keeps drinks cold 24h or hot 12h. BPA-free, leak-proof lid with carrying loop.",
+    "image": "/images/bottle.jpg"
+  },
+  {
+    "id": 5,
+    "name": "Minimalist Desk Lamp",
+    "price": 59.99,
+    "description": "Adjustable LED desk lamp with 5 brightness levels and built-in wireless charging pad at the base. Space-saving clamp design.",
+    "image": "/images/lamp.jpg"
+  },
+  {
+    "id": 6,
+    "name": "Handmade Ceramic Mug Set",
+    "price": 44.99,
+    "description": "Set of 4 artisan-crafted stoneware mugs. Each piece is uniquely glazed, dishwasher and microwave safe.",
+    "image": "/images/mugs.jpg"
+  }
+]

@@ -1,0 +1,18 @@
+{
+  "name": "monorepo",
+  "private": true,
+  "scripts": {
+    "docker:dev": "docker compose up --build",
+    "docker:dev:build": "docker compose up --build dev",
+    "docker:prod": "docker compose up web",
+    "docker:prod:build": "docker compose up --build web",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f",
+    "docker:restart": "docker compose restart",
+    "docker:clean": "docker compose down -v --remove-orphans"
+  },
+  "devDependencies": {
+    "pnpm": "^8.15.0"
+  },
+  "packageManager": "pnpm@8.15.9"
+}

@@ -9,23 +9,133 @@
 .App-header {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 2rem;
+  padding: 2rem 2rem 1.5rem;
   text-align: center;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
 .App-header h1 {
-  margin: 0;
+  margin: 0 0 1rem;
   font-size: 2.5rem;
   font-weight: 300;
 }
 
+/* ---------- Search Bar ---------- */
+.search-bar {
+  position: relative;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  transition: box-shadow 0.2s;
+}
+
+.search-bar input:focus {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.search-bar input::placeholder {
+  color: #999;
+}
+
+.clear-btn {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: #999;
+  padding: 0.25rem;
+  line-height: 1;
+}
+
+.clear-btn:hover {
+  color: #333;
+}
+
+/* ---------- Status (loading / error / empty) ---------- */
+.status-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.status-text {
+  font-size: 1.2rem;
+  color: #666;
+  margin-top: 1rem;
+}
+
+.error-text {
+  color: #e74c3c;
+  font-weight: 600;
+}
+
+.error-detail {
+  color: #999;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.error-icon {
+  font-size: 3rem;
+  color: #e74c3c;
+}
+
+.retry-btn {
+  margin-top: 1.5rem;
+  padding: 0.6rem 1.8rem;
+  border: none;
+  border-radius: 8px;
+  background: #667eea;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.retry-btn:hover {
+  background: #5a6fd6;
+}
+
+/* ---------- Loading Spinner ---------- */
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #e0e0e0;
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- Product Container ---------- */
 .product-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
 }
 
+/* ---------- Product Grid ---------- */
 .product-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -63,15 +173,29 @@
   color: #333;
   font-size: 1.3rem;
   font-weight: 600;
-  margin: 0 0 1rem 0;
+  margin: 0 0 0.5rem 0;
   line-height: 1.4;
+  padding-right: 3.5rem;
+}
+
+.product-category {
+  display: inline-block;
+  background: #f0f0f0;
+  color: #666;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  margin-bottom: 0.75rem;
 }
 
 .product-price {
   color: #2ecc71;
   font-size: 1.5rem;
   font-weight: 700;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .product-description {
@@ -81,6 +205,7 @@
   font-size: 0.95rem;
 }
 
+/* ---------- Product Table ---------- */
 .product-table-container {
   background: white;
   border-radius: 12px;
@@ -95,6 +220,10 @@
   font-weight: 300;
 }
 
+.table-wrapper {
+  overflow-x: auto;
+}
+
 .product-table {
   width: 100%;
   border-collapse: collapse;
@@ -103,16 +232,17 @@
 
 .product-table th,
 .product-table td {
-  padding: 1rem;
+  padding: 0.85rem 1rem;
   text-align: left;
   border-bottom: 1px solid #eee;
+  white-space: nowrap;
 }
 
 .product-table th {
   background-color: #f8f9fa;
   font-weight: 600;
   color: #333;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -121,54 +251,58 @@
   background-color: #f8f9fa;
 }
 
-.product-table td:nth-child(3) {
+.product-table td:nth-child(4) {
   font-weight: 600;
   color: #2ecc71;
 }
 
-/* Responsive Design */
+.product-table td:nth-child(3) {
+  color: #666;
+  font-size: 0.85rem;
+}
+
+/* ---------- Responsive ---------- */
 @media (max-width: 768px) {
   .App-header h1 {
     font-size: 2rem;
   }
-  
+
   .product-container {
     padding: 1rem;
   }
-  
+
   .product-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-  
+
   .product-table-container {
     padding: 1rem;
-    overflow-x: auto;
   }
-  
+
   .product-table {
     font-size: 0.8rem;
   }
-  
+
   .product-table th,
   .product-table td {
-    padding: 0.75rem 0.5rem;
+    padding: 0.65rem 0.5rem;
   }
 }
 
 @media (max-width: 480px) {
   .App-header {
-    padding: 1.5rem;
+    padding: 1.5rem 1rem;
   }
-  
+
   .product-card {
     padding: 1rem;
   }
-  
+
   .product-name {
     font-size: 1.1rem;
   }
-  
+
   .product-price {
     font-size: 1.3rem;
   }

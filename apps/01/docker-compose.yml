@@ -1,0 +1,57 @@
+# docker-compose.yml — Development environment for Product Catalog
+# Start with: docker compose up --build
+# Or from frontend: npm run docker:dev
+version: "3.8"
+
+services:
+  # ── Frontend (React with hot-reload) ──────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      # Mount source code for hot-reload
+      - ./frontend:/app
+      # Keep node_modules inside the container (prevents overwrite)
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+      - FAST_REFRESH=true
+      - REACT_APP_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+    networks:
+      - app-net
+
+  # ── Backend (FastAPI with hot-reload) ─────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount source code for hot-reload (uvicorn --reload detects changes)
+      - ./backend:/app
+      # Mount products data so the repository can read it
+      # (repository.py resolves Path(__file__).parent.parent.parent / "frontend"/"src"/"data"/"products.json"
+      #  which inside the container is /frontend/src/data/products.json)
+      - ./frontend/src/data:/frontend/src/data:ro
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+      - DATABASE_URL=sqlite:///./test.db
+      - JWT_SECRET=your_jwt_secret_key_here
+      - JWT_ALGORITHM=HS256
+      - JWT_EXPIRE_MINUTES=30
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - app-net
+
+networks:
+  app-net:
+    driver: bridge

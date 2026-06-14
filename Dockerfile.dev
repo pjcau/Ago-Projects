@@ -1,0 +1,32 @@
+# Development Dockerfile for pnpm workspace
+# Build context: root of the monorepo
+FROM node:20-alpine
+
+# Enable pnpm via corepack
+RUN corepack enable && corepack prepare pnpm@8.15.9 --activate
+
+WORKDIR /workspace
+
+# Copy workspace configuration files first (for Docker layer caching)
+COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
+
+# Copy all workspace project manifests (for layer caching of pnpm install)
+COPY apps/01/src/frontend/package.json apps/01/src/frontend/package.json
+
+# Install all workspace dependencies (uses frozen lockfile for reproducibility)
+RUN pnpm install --frozen-lockfile
+
+# Copy the rest of the source code
+COPY . .
+
+# Expose frontend dev server port
+EXPOSE 3000
+
+# Development environment variables
+ENV NODE_ENV=development
+ENV CHOKIDAR_USEPOLLING=true
+ENV FAST_REFRESH=true
+ENV WATCHPACK_POLLING=true
+
+# Default command: start the frontend app in dev mode via the pnpm workspace
+CMD ["pnpm", "--filter", "product-catalog-app", "start"]

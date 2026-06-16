@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider, useAuth } from '../context/AuthContext';
 import LoginPage from './LoginPage';
@@ -16,7 +16,7 @@ jest.mock('../services/authService', () => ({
 
 function renderLoginPage() {
   return render(
-    <BrowserRouter future={{ v7_relativeSplatPath: true }}>
+    <BrowserRouter future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
       <AuthProvider>
         <LoginPage />
       </AuthProvider>
@@ -34,7 +34,8 @@ describe('LoginPage', () => {
     renderLoginPage();
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
-    expect(screen.getByText('Login')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /login/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /login/i })).toBeInTheDocument();
   });
 
   it('shows a link to register page', () => {
@@ -44,7 +45,7 @@ describe('LoginPage', () => {
 
   it('displays validation errors for empty fields on submit', () => {
     renderLoginPage();
-    fireEvent.click(screen.getByText('Login'));
+    fireEvent.click(screen.getByRole('button', { name: /login/i }));
 
     expect(screen.getByText('Email is required')).toBeInTheDocument();
     expect(screen.getByText('Password is required')).toBeInTheDocument();
@@ -56,14 +57,16 @@ describe('LoginPage', () => {
 
     renderLoginPage();
 
-    fireEvent.change(screen.getByLabelText(/email/i), {
-      target: { value: 'test@test.com' },
-    });
-    fireEvent.change(screen.getByLabelText(/password/i), {
-      target: { value: 'password123' },
-    });
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText(/email/i), {
+        target: { value: 'test@test.com' },
+      });
+      fireEvent.change(screen.getByLabelText(/password/i), {
+        target: { value: 'password123' },
+      });
 
-    fireEvent.click(screen.getByText('Login'));
+      fireEvent.click(screen.getByRole('button', { name: /login/i }));
+    });
 
     await waitFor(() => {
       expect(authService.login).toHaveBeenCalledWith({
@@ -81,21 +84,25 @@ describe('LoginPage', () => {
 
     renderLoginPage();
 
-    fireEvent.change(screen.getByLabelText(/email/i), {
-      target: { value: 'a@b.com' },
-    });
-    fireEvent.change(screen.getByLabelText(/password/i), {
-      target: { value: '123456' },
-    });
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText(/email/i), {
+        target: { value: 'a@b.com' },
+      });
+      fireEvent.change(screen.getByLabelText(/password/i), {
+        target: { value: 'password123' },
+      });
 
-    fireEvent.click(screen.getByText('Login'));
+      fireEvent.click(screen.getByRole('button', { name: /login/i }));
+    });
 
     // Should show loading state
     expect(screen.getByText('Logging in...')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /logging in/i })).toBeDisabled();
 
     // Clean up
-    resolvePromise({});
+    await act(async () => {
+      resolvePromise({});
+    });
   });
 
   it('displays server error from context', async () => {
@@ -104,14 +111,17 @@ describe('LoginPage', () => {
 
     renderLoginPage();
 
-    fireEvent.change(screen.getByLabelText(/email/i), {
-      target: { value: 'a@b.com' },
-    });
-    fireEvent.change(screen.getByLabelText(/password/i), {
-      target: { value: 'wrong' },
-    });
+    // Use a valid password (at least 6 characters) to pass validation
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText(/email/i), {
+        target: { value: 'a@b.com' },
+      });
+      fireEvent.change(screen.getByLabelText(/password/i), {
+        target: { value: 'validpassword' },
+      });
 
-    fireEvent.click(screen.getByText('Login'));
+      fireEvent.click(screen.getByRole('button', { name: /login/i }));
+    });
 
     await waitFor(() => {
       expect(screen.getByText('Invalid credentials')).toBeInTheDocument();

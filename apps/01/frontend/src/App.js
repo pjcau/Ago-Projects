@@ -21,7 +21,7 @@ function AppRoutes() {
 
 function App() {
   return (
-    <BrowserRouter future={{ v7_relativeSplatPath: true }}>
+    <BrowserRouter future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
       <AuthProvider>
         <div className="App">
           <Navbar />

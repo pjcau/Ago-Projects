@@ -1,0 +1,22 @@
+# Test Dockerfile for frontend unit tests
+# Build context: apps/01/frontend
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copy dependency manifests first for better layer caching
+COPY package.json package-lock.json ./
+
+# Install dependencies with npm
+# Using npm install instead of npm ci to avoid lock file sync issues
+RUN npm install
+
+# Copy the rest of the application source code
+COPY public ./public
+COPY src ./src
+
+# Set CI=true to prevent Jest from running in watch mode
+ENV CI=true
+
+# Default command: run unit tests
+CMD ["npm", "run", "test:unit"]

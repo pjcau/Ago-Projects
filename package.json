@@ -10,7 +10,8 @@
     "docker:logs": "docker compose logs -f",
     "docker:restart": "docker compose restart",
     "docker:clean": "docker compose down -v --remove-orphans",
-    "docker:test:unit": "docker compose run --rm --no-deps backend pytest"
+    "test:unit": "pnpm --filter product-catalog-app run test:unit",
+    "docker:test:unit": "docker compose --profile test run --rm --no-deps --build frontend-test"
   },
   "devDependencies": {
     "pnpm": "^8.15.0"

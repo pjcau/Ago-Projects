@@ -27,7 +27,7 @@ function renderNavbar(user = null) {
   }
 
   return render(
-    <BrowserRouter future={{ v7_relativeSplatPath: true }}>
+    <BrowserRouter future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
       <AuthProvider>
         <Navbar />
       </AuthProvider>

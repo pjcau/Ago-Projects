@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider, useAuth } from './AuthContext';
 
@@ -26,7 +26,7 @@ function TestConsumer() {
 
 function renderWithProviders() {
   return render(
-    <BrowserRouter future={{ v7_relativeSplatPath: true }}>
+    <BrowserRouter future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
       <AuthProvider>
         <TestConsumer />
       </AuthProvider>
@@ -72,7 +72,10 @@ describe('AuthContext', () => {
     authService.login.mockResolvedValue({ user: { email: 'a@b.com' } });
 
     renderWithProviders();
-    fireEvent.click(screen.getByTestId('login-btn'));
+    
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('login-btn'));
+    });
 
     await waitFor(() => {
       expect(screen.getByTestId('auth').textContent).toBe('authenticated');
@@ -85,7 +88,10 @@ describe('AuthContext', () => {
     authService.login.mockRejectedValue(new Error(errMsg));
 
     renderWithProviders();
-    fireEvent.click(screen.getByTestId('login-btn'));
+    
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('login-btn'));
+    });
 
     await waitFor(() => {
       expect(screen.getByTestId('error').textContent).toBe(errMsg);
@@ -98,7 +104,10 @@ describe('AuthContext', () => {
     authService.register.mockResolvedValue({ user: { email: 'new@user.com' } });
 
     renderWithProviders();
-    fireEvent.click(screen.getByTestId('register-btn'));
+    
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('register-btn'));
+    });
 
     await waitFor(() => {
       expect(screen.getByTestId('auth').textContent).toBe('authenticated');
@@ -110,7 +119,10 @@ describe('AuthContext', () => {
     authService.register.mockRejectedValue(new Error('Email taken'));
 
     renderWithProviders();
-    fireEvent.click(screen.getByTestId('register-btn'));
+    
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('register-btn'));
+    });
 
     await waitFor(() => {
       expect(screen.getByTestId('error').textContent).toBe('Email taken');
@@ -121,12 +133,19 @@ describe('AuthContext', () => {
     authService.login.mockResolvedValue({ user: { email: 'test@test.com' } });
 
     renderWithProviders();
-    fireEvent.click(screen.getByTestId('login-btn'));
+    
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('login-btn'));
+    });
+    
     await waitFor(() => {
       expect(screen.getByTestId('auth').textContent).toBe('authenticated');
     });
 
-    fireEvent.click(screen.getByTestId('logout-btn'));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('logout-btn'));
+    });
+    
     expect(screen.getByTestId('auth').textContent).toBe('not-authenticated');
     expect(screen.getByTestId('user').textContent).toBe('null');
   });
@@ -135,12 +154,18 @@ describe('AuthContext', () => {
     authService.login.mockRejectedValue(new Error('Some error'));
     renderWithProviders();
 
-    fireEvent.click(screen.getByTestId('login-btn'));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('login-btn'));
+    });
+    
     await waitFor(() => {
       expect(screen.getByTestId('error').textContent).toBe('Some error');
     });
 
-    fireEvent.click(screen.getByTestId('clear-btn'));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('clear-btn'));
+    });
+    
     expect(screen.getByTestId('error').textContent).toBe('no-error');
   });
 });

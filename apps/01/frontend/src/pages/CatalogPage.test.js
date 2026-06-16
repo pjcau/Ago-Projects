@@ -29,7 +29,7 @@ const dummyProducts = [
 
 function renderCatalogPage() {
   return render(
-    <BrowserRouter future={{ v7_relativeSplatPath: true }}>
+    <BrowserRouter future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
       <CatalogPage />
     </BrowserRouter>
   );
@@ -58,12 +58,22 @@ describe('CatalogPage', () => {
     renderCatalogPage();
 
     await waitFor(() => {
-      expect(screen.getByText('Classic Leather Backpack')).toBeInTheDocument();
+      // Use getAllByText since there are multiple elements with the same text
+      const backpackElements = screen.getAllByText('Classic Leather Backpack');
+      expect(backpackElements.length).toBeGreaterThan(0);
     });
 
-    expect(screen.getByText('Wireless Headphones')).toBeInTheDocument();
-    expect(screen.getByText('$89.99')).toBeInTheDocument();
-    expect(screen.getByText('$249.99')).toBeInTheDocument();
+    // Check for multiple elements with the same text
+    const backpackElements = screen.getAllByText('Classic Leather Backpack');
+    const headphoneElements = screen.getAllByText('Wireless Headphones');
+    expect(backpackElements.length).toBeGreaterThan(0);
+    expect(headphoneElements.length).toBeGreaterThan(0);
+    
+    // Check prices using getAllByText since there are multiple elements
+    const price89Elements = screen.getAllByText('$89.99');
+    const price249Elements = screen.getAllByText('$249.99');
+    expect(price89Elements.length).toBeGreaterThan(0);
+    expect(price249Elements.length).toBeGreaterThan(0);
 
     // Table should also be rendered
     expect(screen.getByText('All Products (3)')).toBeInTheDocument();
@@ -79,14 +89,16 @@ describe('CatalogPage', () => {
     renderCatalogPage();
 
     await waitFor(() => {
-      expect(screen.getByText('Classic Leather Backpack')).toBeInTheDocument();
+      const backpackElements = screen.getAllByText('Classic Leather Backpack');
+      expect(backpackElements.length).toBeGreaterThan(0);
     });
 
     const searchInput = screen.getByLabelText(/search products/i);
     fireEvent.change(searchInput, { target: { value: 'backpack' } });
 
     // Should show matching product
-    expect(screen.getByText('Classic Leather Backpack')).toBeInTheDocument();
+    const backpackElements = screen.getAllByText('Classic Leather Backpack');
+    expect(backpackElements.length).toBeGreaterThan(0);
     // Non-matching should NOT be in the document
     expect(screen.queryByText('Wireless Headphones')).not.toBeInTheDocument();
     // Table count should update
@@ -103,7 +115,8 @@ describe('CatalogPage', () => {
     renderCatalogPage();
 
     await waitFor(() => {
-      expect(screen.getByText('Classic Leather Backpack')).toBeInTheDocument();
+      const backpackElements = screen.getAllByText('Classic Leather Backpack');
+      expect(backpackElements.length).toBeGreaterThan(0);
     });
 
     const searchInput = screen.getByLabelText(/search products/i);
@@ -122,7 +135,8 @@ describe('CatalogPage', () => {
     renderCatalogPage();
 
     await waitFor(() => {
-      expect(screen.getByText('Classic Leather Backpack')).toBeInTheDocument();
+      const backpackElements = screen.getAllByText('Classic Leather Backpack');
+      expect(backpackElements.length).toBeGreaterThan(0);
     });
 
     const searchInput = screen.getByLabelText(/search products/i);
@@ -133,12 +147,15 @@ describe('CatalogPage', () => {
     fireEvent.click(clearBtn);
 
     // All products should be visible again
-    expect(screen.getByText('Classic Leather Backpack')).toBeInTheDocument();
-    expect(screen.getByText('Wireless Headphones')).toBeInTheDocument();
-    expect(screen.getByText('Organic Cotton T-Shirt')).toBeInTheDocument();
+    const backpackElements = screen.getAllByText('Classic Leather Backpack');
+    const headphoneElements = screen.getAllByText('Wireless Headphones');
+    const tshirtElements = screen.getAllByText('Organic Cotton T-Shirt');
+    expect(backpackElements.length).toBeGreaterThan(0);
+    expect(headphoneElements.length).toBeGreaterThan(0);
+    expect(tshirtElements.length).toBeGreaterThan(0);
   });
 
-  it('shows error state on fetch failure', async () => {
+  it('shows error message on network failure', async () => {
     global.fetch = jest.fn().mockRejectedValue(new TypeError('Failed to fetch'));
 
     renderCatalogPage();
@@ -158,6 +175,7 @@ describe('CatalogPage', () => {
       status: 500,
       headers: new Map([['content-type', 'application/json']]),
       json: () => Promise.resolve({ detail: 'Internal server error' }),
+      text: () => Promise.resolve(JSON.stringify({ detail: 'Internal server error' })),
     });
 
     renderCatalogPage();
@@ -192,13 +210,15 @@ describe('CatalogPage', () => {
     renderCatalogPage();
 
     await waitFor(() => {
-      expect(screen.getByText('Classic Leather Backpack')).toBeInTheDocument();
+      const backpackElements = screen.getAllByText('Classic Leather Backpack');
+      expect(backpackElements.length).toBeGreaterThan(0);
     });
 
     const searchInput = screen.getByLabelText(/search products/i);
     fireEvent.change(searchInput, { target: { value: 'electronics' } });
 
-    expect(screen.getByText('Wireless Headphones')).toBeInTheDocument();
+    const headphoneElements = screen.getAllByText('Wireless Headphones');
+    expect(headphoneElements.length).toBeGreaterThan(0);
     expect(screen.queryByText('Organic Cotton T-Shirt')).not.toBeInTheDocument();
   });
 
@@ -212,13 +232,15 @@ describe('CatalogPage', () => {
     renderCatalogPage();
 
     await waitFor(() => {
-      expect(screen.getByText('Classic Leather Backpack')).toBeInTheDocument();
+      const backpackElements = screen.getAllByText('Classic Leather Backpack');
+      expect(backpackElements.length).toBeGreaterThan(0);
     });
 
     const searchInput = screen.getByLabelText(/search products/i);
     fireEvent.change(searchInput, { target: { value: 'organic cotton' } });
 
-    expect(screen.getByText('Organic Cotton T-Shirt')).toBeInTheDocument();
+    const tshirtElements = screen.getAllByText('Organic Cotton T-Shirt');
+    expect(tshirtElements.length).toBeGreaterThan(0);
     expect(screen.queryByText('Wireless Headphones')).not.toBeInTheDocument();
   });
 });

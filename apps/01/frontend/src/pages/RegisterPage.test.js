@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider, useAuth } from '../context/AuthContext';
 import RegisterPage from './RegisterPage';
@@ -15,7 +15,7 @@ jest.mock('../services/authService', () => ({
 
 function renderRegisterPage() {
   return render(
-    <BrowserRouter future={{ v7_relativeSplatPath: true }}>
+    <BrowserRouter future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
       <AuthProvider>
         <RegisterPage />
       </AuthProvider>
@@ -75,17 +75,19 @@ describe('RegisterPage', () => {
 
     renderRegisterPage();
 
-    fireEvent.change(screen.getByLabelText(/email/i), {
-      target: { value: 'new@user.com' },
-    });
-    fireEvent.change(screen.getByLabelText(/^password$/i), {
-      target: { value: '123456' },
-    });
-    fireEvent.change(screen.getByLabelText(/confirm password/i), {
-      target: { value: '123456' },
-    });
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText(/email/i), {
+        target: { value: 'new@user.com' },
+      });
+      fireEvent.change(screen.getByLabelText(/^password$/i), {
+        target: { value: '123456' },
+      });
+      fireEvent.change(screen.getByLabelText(/confirm password/i), {
+        target: { value: '123456' },
+      });
 
-    fireEvent.click(screen.getByText('Register'));
+      fireEvent.click(screen.getByText('Register'));
+    });
 
     await waitFor(() => {
       expect(authService.register).toHaveBeenCalledWith({
@@ -104,22 +106,26 @@ describe('RegisterPage', () => {
 
     renderRegisterPage();
 
-    fireEvent.change(screen.getByLabelText(/email/i), {
-      target: { value: 'a@b.com' },
-    });
-    fireEvent.change(screen.getByLabelText(/^password$/i), {
-      target: { value: '123456' },
-    });
-    fireEvent.change(screen.getByLabelText(/confirm password/i), {
-      target: { value: '123456' },
-    });
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText(/email/i), {
+        target: { value: 'a@b.com' },
+      });
+      fireEvent.change(screen.getByLabelText(/^password$/i), {
+        target: { value: '123456' },
+      });
+      fireEvent.change(screen.getByLabelText(/confirm password/i), {
+        target: { value: '123456' },
+      });
 
-    fireEvent.click(screen.getByText('Register'));
+      fireEvent.click(screen.getByText('Register'));
+    });
 
     expect(screen.getByText('Creating account...')).toBeInTheDocument();
 
     // Clean up
-    resolvePromise({});
+    await act(async () => {
+      resolvePromise({});
+    });
   });
 
   it('displays server error from context', async () => {
@@ -128,17 +134,19 @@ describe('RegisterPage', () => {
 
     renderRegisterPage();
 
-    fireEvent.change(screen.getByLabelText(/email/i), {
-      target: { value: 'existing@test.com' },
-    });
-    fireEvent.change(screen.getByLabelText(/^password$/i), {
-      target: { value: '123456' },
-    });
-    fireEvent.change(screen.getByLabelText(/confirm password/i), {
-      target: { value: '123456' },
-    });
+    await act(async () => {
+      fireEvent.change(screen.getByLabelText(/email/i), {
+        target: { value: 'existing@test.com' },
+      });
+      fireEvent.change(screen.getByLabelText(/^password$/i), {
+        target: { value: '123456' },
+      });
+      fireEvent.change(screen.getByLabelText(/confirm password/i), {
+        target: { value: '123456' },
+      });
 
-    fireEvent.click(screen.getByText('Register'));
+      fireEvent.click(screen.getByText('Register'));
+    });
 
     await waitFor(() => {
       expect(screen.getByText('Email already registered')).toBeInTheDocument();

@@ -67,5 +67,15 @@ services:
     depends_on:
       - backend
 
+  # Frontend unit tests (pnpm test:unit)
+  frontend-test:
+    build:
+      context: ./apps/01/frontend
+      dockerfile: Dockerfile.test
+    environment:
+      - CI=true
+    profiles:
+      - test
+
 volumes:
   postgres_data:

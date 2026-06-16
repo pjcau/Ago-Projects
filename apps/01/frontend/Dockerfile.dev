@@ -1,6 +1,9 @@
 # Frontend Dockerfile for development with hot-reload
 FROM node:18-alpine
 
+# Install pnpm globally so it's available as a command in the container
+RUN npm install -g pnpm
+
 # Set working directory
 WORKDIR /app
 

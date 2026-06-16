@@ -10,7 +10,7 @@ function renderWithProviders(ui, { initialUser = null } = {}) {
   // We use a wrapper component to pre-set the auth state
   function Wrapper({ children }) {
     return (
-      <BrowserRouter future={{ v7_relativeSplatPath: true }}>
+      <BrowserRouter future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
         <AuthProvider>{children}</AuthProvider>
       </BrowserRouter>
     );

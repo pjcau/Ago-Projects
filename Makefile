@@ -1,4 +1,4 @@
-.PHONY: dev build down logs restart clean dev-build prod prod-build
+.PHONY: dev build down logs restart clean dev-build prod prod-build test
 
 # Start frontend in development mode via pnpm workspace (Docker)
 dev:
@@ -42,3 +42,7 @@ clean:
 # Run commands inside the dev container
 exec:
 	docker compose exec dev sh
+
+# Run frontend unit tests in a container
+test:
+	docker compose run --rm --no-deps --build frontend-test

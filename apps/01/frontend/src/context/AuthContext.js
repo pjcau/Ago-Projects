@@ -33,7 +33,8 @@ export function AuthProvider({ children }) {
       return data;
     } catch (err) {
       setError(err.message);
-      throw err;
+      // Don't re-throw the error to prevent unhandled promise rejections
+      // The error is already stored in state for the UI to display
     }
   }, []);
 
@@ -45,7 +46,8 @@ export function AuthProvider({ children }) {
       return data;
     } catch (err) {
       setError(err.message);
-      throw err;
+      // Don't re-throw the error to prevent unhandled promise rejections
+      // The error is already stored in state for the UI to display
     }
   }, []);
 

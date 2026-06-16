@@ -110,6 +110,20 @@ class TestListProducts:
         names = [p["name"] for p in data]
         assert names == sorted(names)
 
+    def test_sort_by_name_desc(self, client: TestClient) -> None:
+        resp = client.get("/api/products?sort_by=name&sort_order=desc")
+        assert resp.status_code == 200
+        data = resp.json()
+        names = [p["name"] for p in data]
+        assert names == sorted(names, reverse=True)
+
+    def test_sort_by_id_asc(self, client: TestClient) -> None:
+        resp = client.get("/api/products?sort_by=id&sort_order=asc")
+        assert resp.status_code == 200
+        data = resp.json()
+        ids = [p["id"] for p in data]
+        assert ids == sorted(ids)
+
     def test_pagination_limit(self, client: TestClient) -> None:
         resp = client.get("/api/products?limit=2")
         assert resp.status_code == 200
@@ -140,6 +154,13 @@ class TestListProducts:
         assert resp.status_code == 200
         data = resp.json()
         assert len(data) == 0
+
+    def test_empty_db_returns_empty_list(self, client: TestClient) -> None:
+        """When database is empty, list returns []."""
+        clear_all_tables()
+        resp = client.get("/api/products")
+        assert resp.status_code == 200
+        assert resp.json() == []
 
 
 class TestGetProduct:
@@ -205,3 +226,47 @@ class TestRepository:
             assert repo.is_empty()
         finally:
             db.close()
+
+    def test_seed_from_json_skip_duplicates(self) -> None:
+        """Calling seed_from_json twice skips already-seeded rows."""
+        from app.repository import ProductRepository
+
+        db = TestSessionLocal()
+        try:
+            # Clean the products table
+            db.query(Product).delete()
+            db.commit()
+
+            repo = ProductRepository()
+            count1 = repo.seed_from_json(db)
+            count2 = repo.seed_from_json(db)
+            assert count2 == 0  # all skipped
+            total = db.query(Product).count()
+            assert total == count1
+        finally:
+            db.close()
+
+    def test_list_all_with_no_params(self) -> None:
+        from app.repository import ProductRepository
+
+        db = TestSessionLocal()
+        try:
+            repo = ProductRepository(db=db)
+            products = repo.list_all()
+            assert len(products) == 3
+        finally:
+            db.close()
+
+    def test_repository_without_db_creates_own_session(self) -> None:
+        """When no db is passed, ProductRepository creates its own session."""
+        from app.repository import ProductRepository, repo as singleton_repo
+
+        # The singleton repo has no injected session
+        assert singleton_repo._db is None
+
+        # Calling list_all on a repo without db should still work
+        # (but it uses the default engine which has no data in test mode)
+        # We just verify there's no crash
+        repo = ProductRepository()
+        result = repo.list_all()
+        assert isinstance(result, list)

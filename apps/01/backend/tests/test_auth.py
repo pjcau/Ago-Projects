@@ -3,47 +3,26 @@ from __future__ import annotations
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import Session
 
 from app.auth import hash_password, create_access_token, decode_access_token
-from app.database import Base, get_db
-
-# Use the SAME database URL and engine as conftest so tables are shared
-TEST_DB_URL = "sqlite:///./test.db"
-
-engine = create_engine(TEST_DB_URL, connect_args={"check_same_thread": False})
-TestSession = sessionmaker(bind=engine, autocommit=False, autoflush=False)
+from app.database import get_db
+from tests.conftest import TestSessionLocal
 
 
 @pytest.fixture(autouse=True)
 def setup_db():
-    """Create tables before each test and drop all data afterwards."""
-    # Ensure all tables exist (idempotent)
-    Base.metadata.create_all(bind=engine)
-
-    # Clear all rows before each test
-    db = TestSession()
-    try:
-        for table in reversed(Base.metadata.sorted_tables):
-            db.execute(table.delete())
-        db.commit()
-    finally:
-        db.close()
-
+    """All table management is handled by conftest's autouse fixtures."""
     yield
-
-    # Drop all tables after test
-    Base.metadata.drop_all(bind=engine)
 
 
 @pytest.fixture()
 def client():
-    """TestClient with overridden DB dependency using the auth-test engine."""
+    """TestClient with overridden DB dependency using the shared in-memory engine."""
     from main import app
 
     def _get_test_db():
-        db = TestSession()
+        db = TestSessionLocal()
         try:
             yield db
         finally:
